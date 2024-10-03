@@ -56,6 +56,7 @@
                   <span class="site-state-item-count">{{ site.posts.length }}</span>
                   <span class="site-state-item-name">{{ __('state.posts') }}</span>
                 </a>
+                </a>
               </div>
             {% endif %}
 
@@ -120,7 +121,7 @@
 
           {# Blogroll #}
           {% if theme.links %}
-            <div class="links-of-blogroll motion-element {{ "links-of-blogroll-" + theme.links_layout | default('inline') }}">
+            <div class="links-of-blogroll motion-element {{ 'links-of-blogroll-' + theme.links_layout | default('inline') }}">
               <div class="links-of-blogroll-title">
                 <i class="fa  fa-fw fa-{{ theme.links_icon | default('globe') | lower }}"></i>
                 {{ theme.links_title }}
