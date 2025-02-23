@@ -18,8 +18,8 @@ override: true
 # Site Information Settings
 # ---------------------------------------------------------------
 title: Magnoliaの博客
-subtitle: 我们的征途是星辰大海
-author: Zhu Yuping
+subtitle: Fighting
+author: Magnolia
 description: Python/测试开发
 language: zh-CN
 timezone: Asia/Shanghai
