@@ -1,28 +1,16 @@
 /* global NexT: true */
 
+// 文档加载完成后初始化滚动监听功能
 $(document).ready(function () {
-
   initScrollSpy();
-  // Handle the clicking of TOC links
 
-  $('.post-toc a').on('click', function (e) {
-    e.preventDefault();
-    var targetId = decodeURIComponent($(this).attr('href'));
-    var target = $(targetId);
-
-    if (target.length) {
-      $('html, body').animate({
-        scrollTop: target.offset().top
-      }, 500);
-    }
-  });
-
-
+  // 初始化滚动监听功能
   function initScrollSpy() {
     var tocSelector = '.post-toc';
     var $tocElement = $(tocSelector);
     var activeCurrentSelector = '.active-current';
 
+    // 激活滚动监听事件处理
     $tocElement
       .on('activate.bs.scrollspy', function () {
         var $currentActiveElement = $(tocSelector + ' .active').last();
@@ -35,84 +23,16 @@ $(document).ready(function () {
       })
       .on('clear.bs.scrollspy', removeCurrentActiveClass);
 
+    // 设置滚动监听目标
     $('body').scrollspy({target: tocSelector});
 
+    // 移除当前活动类
     function removeCurrentActiveClass() {
       $(tocSelector + ' ' + activeCurrentSelector)
         .removeClass(activeCurrentSelector.substring(1));
     }
   }
 
-});
-
-$(document).ready(function () {
-  var html = $('html');
-  var TAB_ANIMATE_DURATION = 200;
-  var hasVelocity = $.isFunction(html.velocity);
-
-  $('.sidebar-nav li').on('click', function () {
-    var item = $(this);
-    var activeTabClassName = 'sidebar-nav-active';
-    var activePanelClassName = 'sidebar-panel-active';
-    if (item.hasClass(activeTabClassName)) {
-      return;
-    }
-
-    var currentTarget = $('.' + activePanelClassName);
-    var target = $('.' + item.data('target'));
-
-    hasVelocity ?
-      currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
-        target
-          .velocity('stop')
-          .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
-          .addClass(activePanelClassName);
-      }) :
-      currentTarget.animate({opacity: 0}, TAB_ANIMATE_DURATION, function () {
-        currentTarget.hide();
-        target
-          .stop()
-          .css({'opacity': 0, 'display': 'block'})
-          .animate({opacity: 1}, TAB_ANIMATE_DURATION, function () {
-            currentTarget.removeClass(activePanelClassName);
-            target.addClass(activePanelClassName);
-          });
-      });
-
-    item.siblings().removeClass(activeTabClassName);
-    item.addClass(activeTabClassName);
-  });
-
-  // TOC item animation navigate & prevent #item selector in adress bar.
-  $('.post-toc a').on('click', function (e) {
-    e.preventDefault();
-    var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
-    var offset = $(targetSelector).offset().top;
-
-    hasVelocity ?
-      html.velocity('stop').velocity('scroll', {
-        offset: offset + 'px',
-        mobileHA: false
-      }) :
-      $('html, body').stop().animate({
-        scrollTop: offset
-      }, 500);
-  });
-
-  // Expand sidebar on post detail page by default, when post has a toc.
-  var $tocContent = $('.post-toc-content');
-  var isSidebarCouldDisplay = CONFIG.sidebar.display === 'post' ||
-    CONFIG.sidebar.display === 'always';
-  var hasTOC = $tocContent.length > 0 && $tocContent.html().trim().length > 0;
-  if (isSidebarCouldDisplay && hasTOC) {
-    CONFIG.motion.enable ?
-      (NexT.motion.middleWares.sidebar = function () {
-        NexT.utils.displaySidebar();
-      }) : NexT.utils.displaySidebar();
-  }
-});
-
-$(document).ready(function () {
   // 处理目录点击展开/折叠
   $('.post-toc .nav-item').on('click', function (e) {
     e.stopPropagation(); // 阻止事件冒泡
@@ -142,4 +62,67 @@ $(document).ready(function () {
   $(window).on('activate.bs.scrollspy', function () {
     expandActiveNav();
   });
+});
+
+// 处理侧边栏导航点击事件
+$(document).ready(function () {
+  var html = $('html');
+  var TAB_ANIMATE_DURATION = 200;
+  var hasVelocity = $.isFunction(html.velocity);
+
+  // 侧边栏导航项点击事件处理
+  $('.sidebar-nav li').on('click', function () {
+    var item = $(this);
+    var activeTabClassName = 'sidebar-nav-active';
+    var activePanelClassName = 'sidebar-panel-active';
+    if (item.hasClass(activeTabClassName)) {
+      return;
+    }
+
+    var currentTarget = $('.' + activePanelClassName);
+    var target = $('.' + item.data('target'));
+
+    // 使用Velocity.js或jQuery进行动画切换
+    hasVelocity ? currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+      target
+        .velocity('stop')
+        .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+        .addClass(activePanelClassName);
+    }) : currentTarget.animate({opacity: 0}, TAB_ANIMATE_DURATION, function () {
+      currentTarget.hide();
+      target
+        .stop()
+        .css({'opacity': 0, 'display': 'block'})
+        .animate({opacity: 1}, TAB_ANIMATE_DURATION, function () {
+          currentTarget.removeClass(activePanelClassName);
+          target.addClass(activePanelClassName);
+        });
+    });
+
+    item.siblings().removeClass(activeTabClassName);
+    item.addClass(activeTabClassName);
+  });
+
+  // TOC 链接点击事件处理
+  $('.post-toc a').on('click', function (e) {
+    e.preventDefault();
+    var targetId = decodeURIComponent($(this).attr('href'));
+    var target = $(targetId);
+    // 如果目标存在，滚动到目标位置
+    if (target.length) {
+      $('html, body').animate({
+        scrollTop: target.offset().top
+      }, 500);
+    }
+  });
+
+  // 默认展开侧边栏（如果有TOC）
+  var $tocContent = $('.post-toc-content');
+  var isSidebarCouldDisplay = CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always';
+  var hasTOC = $tocContent.length > 0 && $tocContent.html().trim().length > 0;
+  if (isSidebarCouldDisplay && hasTOC) {
+    CONFIG.motion.enable ? (NexT.motion.middleWares.sidebar = function () {
+      NexT.utils.displaySidebar();
+    }) : NexT.utils.displaySidebar();
+  }
 });
