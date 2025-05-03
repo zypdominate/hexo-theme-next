@@ -615,12 +615,13 @@ algolia_search:
 # Local search
 # Dependencies: https://github.com/flashlab/hexo-generator-search
 local_search:
-  enable: false
+  enable: true
   # if auto, trigger search by changing input
   # if manual, trigger search by pressing enter key or search button
   trigger: auto
   # show top n results per article, show all results by setting to -1
   top_n_per_article: 1
+  unescape: true
 
 
 # ---------------------------------------------------------------
@@ -737,14 +738,15 @@ canvas_ribbon:
 vendors:
   # Internal path prefix. Please do not edit it.
   _internal: lib
-
+  # Available values: local | jsdelivr | unpkg | cdnjs
+  plugins: jsdelivr
   # Internal version: 2.1.3
-  jquery:
-
+  jquery: //cdn.jsdelivr.net/npm/jquery@2/dist/jquery.min.js
   # Internal version: 2.1.5
   # See: http://fancyapps.com/fancybox/
-  fancybox:
-  fancybox_css:
+  fancybox: //cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js
+  fancybox_css: //cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css
+
 
   # Internal version: 1.0.6
   # See: https://github.com/ftlabs/fastclick
@@ -822,3 +824,5 @@ images: images
 
 # Theme version
 version: 5.1.4
+
+minify: true
